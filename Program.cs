@@ -1,4 +1,8 @@
+using Microsoft.EntityFrameworkCore;
+using Product.Classes;
+using Product.Contexts;
 using Product.Extensions;
+using Product.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -6,10 +10,13 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddJwtAuthentication(builder.Configuration);
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-
+builder.Services.AddScoped<ICartService, CartService>();
+builder.Services.AddDbContext<ApplicationDBContext>(options =>
+{
+    options.UseSqlServer(builder.Configuration.GetConnectionString("connString"));
+});
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
